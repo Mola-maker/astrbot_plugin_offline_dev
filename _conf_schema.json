@@ -1,0 +1,86 @@
+{
+  "skills_dir_name": {
+    "description": "技能根目录名（位于本插件数据目录之下）",
+    "type": "string",
+    "default": "skills",
+    "hint": "实际路径为 data/plugin_data/astrbot_plugin_offline_dev/<skills_dir_name>/"
+  },
+  "default_timeout_seconds": {
+    "description": "技能默认执行超时（秒）",
+    "type": "int",
+    "default": 30,
+    "hint": "技能 manifest 里没显式声明 timeout_seconds 时使用；防止恶意/卡死技能拖垮主线程"
+  },
+  "max_concurrent_skills": {
+    "description": "全局并发执行上限",
+    "type": "int",
+    "default": 4,
+    "hint": "同时在跑的技能不超过此值；超额请求会立即被拒绝"
+  },
+  "auto_install_examples": {
+    "description": "首次启动时安装示例技能",
+    "type": "bool",
+    "default": true,
+    "hint": "把插件自带的 echo / wordcount 示例复制到技能目录"
+  },
+  "skill_blacklist": {
+    "description": "禁用的技能名单（按 manifest.name 匹配）",
+    "type": "list",
+    "default": [],
+    "hint": "黑名单内的技能不会被加载"
+  },
+  "enable_auto_reload_command": {
+    "description": "启用 /skill reload 指令",
+    "type": "bool",
+    "default": true,
+    "hint": "关闭后只能通过重启插件刷新技能列表"
+  },
+  "loop_min_interval_seconds": {
+    "description": "Loop 最小允许间隔（秒）",
+    "type": "int",
+    "default": 5,
+    "hint": "防止 loop 间隔过小导致刷屏/淹没事件循环"
+  },
+  "loop_max_count": {
+    "description": "全局 loop 数量上限",
+    "type": "int",
+    "default": 10,
+    "hint": "同时存在的 loop（含暂停）不能超过此数"
+  },
+  "loop_auto_resume_on_start": {
+    "description": "插件启动时自动恢复持久化的 loop",
+    "type": "bool",
+    "default": false,
+    "hint": "默认关闭以避免重启后突然刷屏；开启后会按持久化的 enabled 状态恢复"
+  },
+  "loop_send_failure_message": {
+    "description": "loop 执行失败时也向会话发送错误提示",
+    "type": "bool",
+    "default": false,
+    "hint": "关闭则失败时只记录日志；开启可在群里看到具体错误，便于调试"
+  },
+  "enable_loop_command": {
+    "description": "启用 /skill loop 指令组",
+    "type": "bool",
+    "default": true,
+    "hint": "关闭后无法新建/管理 loop，但已有的 loop 不会停止"
+  },
+  "loop_default_jitter_seconds": {
+    "description": "通过 /skill loop add 创建间隔型 loop 时的默认抖动（秒）",
+    "type": "int",
+    "default": 0,
+    "hint": "防止多个相同间隔的 loop 共振；0 表示不抖动；必须严格小于 interval"
+  },
+  "enable_llm_tools": {
+    "description": "把 run_offline_skill / schedule_offline_skill_loop 暴露为 LLM 工具",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后 AI 可以在对话中自动执行/调度本地技能；为安全起见默认关闭"
+  },
+  "enable_web_ui": {
+    "description": "启用 Web 仪表盘",
+    "type": "bool",
+    "default": true,
+    "hint": "开启后可在 AstrBot 仪表盘登录态下访问 /api/plug/offline_dev/ui 查看实时进程"
+  }
+}

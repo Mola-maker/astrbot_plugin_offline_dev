@@ -1,0 +1,19 @@
+name: wordcount
+display_name: Word Count
+version: 1.0.0
+author: chenlihuasb
+description: 统计输入文本的字符数与单词数
+command: wc
+entrypoint: handler:run
+timeout_seconds: 5
+permission: user
+loopable: true
+max_loop_instances: 2
+
+# 自动注册的 loop 模板。加载时会创建 id=tpl_wordcount_heartbeat 的待领养 loop；
+# 在目标群里执行 /skill loop adopt tpl_wordcount_heartbeat 即可绑定并启动。
+default_loops:
+  - id: heartbeat
+    interval_seconds: 60
+    args: ["heartbeat ping"]
+    description: 60s 心跳，演示 default_loops 模板与 adopt 流程

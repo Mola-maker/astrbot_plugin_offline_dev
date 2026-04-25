@@ -1,0 +1,9 @@
+name: echo
+display_name: Echo
+version: 1.0.0
+author: chenlihuasb
+description: 把输入原样返回，用于检查框架是否在线
+command: echo
+entrypoint: handler:run
+timeout_seconds: 5
+permission: user
