@@ -14,7 +14,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from logging import Logger
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -43,7 +42,7 @@ class SkillContext:
     astrbot_context: "Context"
     data_dir: Path
     config: dict[str, Any]
-    logger: Logger
+    logger: Any                      # 实为 astrbot.api.logger，避免引入 logging 类型
     args: tuple[str, ...]
     target_session: str
     event: "AstrMessageEvent | None" = None

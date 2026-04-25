@@ -13,16 +13,15 @@
 from __future__ import annotations
 
 import importlib.util
-import logging
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from types import ModuleType
 from typing import Callable
 
-from .manifest import ManifestError, SkillManifest, load_manifest
+from astrbot.api import logger
 
-logger = logging.getLogger("astrbot_plugin_offline_dev.loader")
+from .manifest import ManifestError, SkillManifest, load_manifest
 
 _MODULE_PREFIX = "astrbot_plugin_offline_dev._skills"
 

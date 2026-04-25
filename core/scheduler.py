@@ -12,7 +12,6 @@ from __future__ import annotations
 import asyncio
 import datetime as _dt
 import json
-import logging
 import random
 import secrets
 import time
@@ -20,7 +19,7 @@ from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Awaitable, Callable
 
-logger = logging.getLogger("astrbot_plugin_offline_dev.scheduler")
+from astrbot.api import logger
 
 # APScheduler 是 AstrBot 自身依赖，可直接使用其 CronTrigger 解析 cron 表达式
 try:

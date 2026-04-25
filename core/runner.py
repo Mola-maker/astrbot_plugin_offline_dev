@@ -11,14 +11,13 @@ from __future__ import annotations
 
 import asyncio
 import inspect
-import logging
 import time
 from dataclasses import dataclass
 
+from astrbot.api import logger
+
 from .context import SkillContext
 from .registry import RegisteredSkill
-
-logger = logging.getLogger("astrbot_plugin_offline_dev.runner")
 
 
 @dataclass(frozen=True)

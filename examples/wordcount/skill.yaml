@@ -1,7 +1,7 @@
 name: wordcount
 display_name: Word Count
 version: 1.0.0
-author: chenlihuasb
+author: Mola-maker
 description: 统计输入文本的字符数与单词数
 command: wc
 entrypoint: handler:run

@@ -10,13 +10,13 @@
 from __future__ import annotations
 
 import json
-import logging
 import time
 from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Awaitable, Callable
 
 from quart import request
+from astrbot.api import logger
 from astrbot.dashboard.server import Response
 
 from .core import LoopSpec, RegisteredSkill, SkillRegistry
@@ -24,8 +24,6 @@ from .core import LoopSpec, RegisteredSkill, SkillRegistry
 if TYPE_CHECKING:
     from astrbot.api.star import Context
     from .core import LoopScheduler
-
-logger = logging.getLogger("astrbot_plugin_offline_dev.web_ui")
 
 # 路由前缀；最终对外为 /api/plug/offline_dev/<...>
 _ROUTE_PREFIX = "/offline_dev"
@@ -382,7 +380,14 @@ function fmtTs(ts) {
 }
 
 function escapeHtml(s) {
-  return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  if (s === null || s === undefined) return "";
+  var out = String(s);
+  out = out.split("&").join("&amp;");
+  out = out.split("<").join("&lt;");
+  out = out.split(">").join("&gt;");
+  out = out.split('"').join("&quot;");
+  out = out.split("'").join("&#39;");
+  return out;
 }
 
 function renderLoops(loops) {

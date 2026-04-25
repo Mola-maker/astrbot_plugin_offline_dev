@@ -13,7 +13,6 @@ v0.4 新增 manifest default_loops 模板（待领养） / 内嵌 Web 仪表盘 
 from __future__ import annotations
 
 import asyncio
-import logging
 import shlex
 import shutil
 import time
@@ -47,10 +46,10 @@ LOG_PREFIX = "[offline_dev]"
 
 @register(
     PLUGIN_NAME,
-    "chenlihuasb",
+    "Mola-maker",
     "离线技能开发框架：技能包热移植 + 安全异步执行 + Loop 模式（间隔/cron/模板）+ Web 仪表盘",
     "0.4.0",
-    "https://github.com/chenlihuasb/astrbot_plugin_offline_dev",
+    "https://github.com/Mola-maker/astrbot_plugin_offline_dev",
 )
 class OfflineDevPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig) -> None:
@@ -242,7 +241,7 @@ class OfflineDevPlugin(Star):
             astrbot_context=self.context,
             data_dir=skill.data_dir,
             config=dict(skill.manifest.raw),
-            logger=logging.getLogger(f"offline_dev.skill.{skill.name}"),
+            logger=logger,
             args=args,
             target_session=target_session,
             event=event,
@@ -255,7 +254,7 @@ class OfflineDevPlugin(Star):
     # ──────────────────────────────────────────────────────────────
 
     @filter.command_group("skill")
-    async def skill_group(self):
+    async def skill_group(self, event: AstrMessageEvent):
         """技能管理指令组。"""
         pass
 
@@ -396,7 +395,7 @@ class OfflineDevPlugin(Star):
     # ──────────────────────────────────────────────────────────────
 
     @skill_group.group("loop")
-    def loop_group(self):
+    def loop_group(self, event: AstrMessageEvent):
         """Loop 自动循环模式。"""
         pass
 
