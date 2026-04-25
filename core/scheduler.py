@@ -366,13 +366,21 @@ class LoopScheduler:
         return ok, output, err
 
     async def stop_all(self) -> int:
+        # 锁内：快照所有记录、清空状态、立刻持久化、释放锁。
+        # 锁外：并发取消所有 Task —— 不让"等待协程退出"在持锁期间发生，
+        # 避免长时间阻塞其他 add/pause/resume 调用。
         async with self._lock:
-            count = len(self._records)
-            for rec in list(self._records.values()):
-                await self._cancel_task(rec)
+            records_to_cancel = list(self._records.values())
+            count = len(records_to_cancel)
             self._records.clear()
             self._persist()
-            return count
+
+        if records_to_cancel:
+            await asyncio.gather(
+                *(self._cancel_task(rec) for rec in records_to_cancel),
+                return_exceptions=True,
+            )
+        return count
 
     async def restore(self, specs: list[LoopSpec], *, autostart: bool) -> int:
         """从持久化数据批量恢复 loop。返回成功启动的数量。"""

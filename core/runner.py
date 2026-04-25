@@ -61,8 +61,10 @@ class SkillRunner:
                 error="并发已达上限，请稍后再试",
             )
 
-        start = time.monotonic()
         async with self._semaphore:
+            # 计时打点放在拿到信号量之后、调用之前，
+            # 这样 duration_ms 度量的是技能本身的执行时间，不混入排队等待时间。
+            start = time.monotonic()
             try:
                 output = await asyncio.wait_for(
                     self._invoke(skill, ctx), timeout=timeout

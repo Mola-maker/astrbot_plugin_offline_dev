@@ -104,8 +104,12 @@ class OfflineDevPlugin(Star):
             except Exception:  # noqa: BLE001
                 logger.exception(f"{LOG_PREFIX} 注册 WebUI 失败，已退化为仅指令模式")
 
-        # __init__ 不阻塞 —— 真正的扫描/导入丢到后台 Task
-        asyncio.create_task(self._initialize_async())
+        # __init__ 不阻塞 —— 真正的扫描/导入丢到后台 Task。
+        # 必须保留强引用，否则 Python 3.11+ 事件循环只持弱引用，GC 介入可能在
+        # 任务完成前回收它（参见 PEP 3156 / asyncio.create_task 文档警告）。
+        self._init_task: asyncio.Task | None = asyncio.create_task(
+            self._initialize_async()
+        )
         logger.info(f"{LOG_PREFIX} 插件已加载，技能根目录: {self._skills_root}")
 
     # ──────────────────────────────────────────────────────────────
@@ -395,7 +399,7 @@ class OfflineDevPlugin(Star):
     # ──────────────────────────────────────────────────────────────
 
     @skill_group.group("loop")
-    def loop_group(self, event: AstrMessageEvent):
+    async def loop_group(self, event: AstrMessageEvent):
         """Loop 自动循环模式。"""
         pass
 
@@ -799,7 +803,16 @@ class OfflineDevPlugin(Star):
     # ──────────────────────────────────────────────────────────────
 
     async def terminate(self) -> None:
-        """插件卸载。停掉所有 loop，清空注册表。"""
+        """插件卸载。取消后台初始化、停掉所有 loop、清空注册表。"""
+        # 极端场景：插件加载即被卸载，初始化任务可能还没跑完，先取消并 await
+        if self._init_task is not None and not self._init_task.done():
+            self._init_task.cancel()
+            try:
+                await self._init_task
+            except (asyncio.CancelledError, Exception):  # noqa: BLE001
+                pass
+        self._init_task = None
+
         try:
             await self._scheduler.stop_all()
         except Exception:  # noqa: BLE001
